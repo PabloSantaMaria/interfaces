@@ -170,7 +170,7 @@ window.addEventListener('DOMContentLoaded', (event) => {
   // a. Dibujar la imagen dentro del canvas
   // b. Implementar una función que aplique el filtro de escala de grises y muestre el resultado en el
   //    canvas.
-  function punto6(newSrc = '../resources/exactas.jpg') {
+  function punto6(newSrc = 'resources/exactas.jpg') {
     let canvas = setupCanvas('punto6', 600, 600);
     let ctx = canvas.getContext('2d');
     canvas.addEventListener('click', greyscale);
