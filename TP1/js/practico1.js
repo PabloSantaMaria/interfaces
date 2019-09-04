@@ -6,6 +6,13 @@
 /* eslint-disable require-jsdoc */
 /* eslint-disable linebreak-style */
 window.addEventListener('DOMContentLoaded', (event) => {
+  // Punto 1:
+  // Definir una matriz de 100 elementos x 100 elementos y completarla con valores
+  // enteros random, y resuelva los siguientes incisos:
+  // a. Escribir una función que retorne el valor máximo de toda la matriz
+  // b. Escribir una función que retorne el valor máximo contenido en las filas pares y el valor mínimo en
+  //    las filas impares
+  // c. Calcular el valor promedio de cada fila y guardarlos en un arreglo.
   function punto1() {
     let showMatrix = document.getElementById('showMatrix');
     let results = document.getElementById('results');
@@ -88,13 +95,16 @@ window.addEventListener('DOMContentLoaded', (event) => {
     }
   }
 
+  // Punto 2:
+  // Pintar una región rectangular de un color utilizando el Contexto de HTML5.
   function punto2() {
     let canvas = setupCanvas('punto2', 500, 300);
     let ctx = canvas.getContext('2d');
     ctx.fillStyle = 'rgb(0, 0, 255)';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
   }
-
+  // Punto 3:
+  // Pintar una región rectangular de un color utilizando la estructura de ImageData.
   function punto3() {
     let canvas = setupCanvas('punto3', 500, 300);
     let ctx = canvas.getContext('2d');
@@ -108,7 +118,9 @@ window.addEventListener('DOMContentLoaded', (event) => {
     }
     ctx.putImageData(imageData, 0, 0);
   }
-
+  // Punto 4:
+  // Especificar la función para pintar un rectángulo utilizando un gradiente de la siguiente forma:
+  // RGB(0, 0, 0) ----> RGB(255, 255, 255)
   function punto4() {
     let canvas = setupCanvas('punto4', 500, 300);
     let ctx = canvas.getContext('2d');
@@ -123,7 +135,10 @@ window.addEventListener('DOMContentLoaded', (event) => {
     }
     ctx.putImageData(imageData, 0, 0);
   }
-
+  // Punto 5:
+  // Pintar un rectángulo en pantalla, utilizando un gradiente que vaya de negro a amarillo en la primera
+  // mitad del ancho del rectángulo, y de amarillo a rojo, en la segunda mitad. Por otro lado, en Y el
+  // degrade se mantiene constante.
   function punto5() {
     let canvas = setupCanvas('punto5', 500, 300);
     let ctx = canvas.getContext('2d');
@@ -150,14 +165,18 @@ window.addEventListener('DOMContentLoaded', (event) => {
     }
     ctx.putImageData(imageData, 0, 0);
   }
-
-  function punto6() {
+  // Punto 6:
+  // Cargar una Imagen desde disco o URL
+  // a. Dibujar la imagen dentro del canvas
+  // b. Implementar una función que aplique el filtro de escala de grises y muestre el resultado en el
+  //    canvas.
+  function punto6(newSrc = '../resources/exactas.jpg') {
     let canvas = setupCanvas('punto6', 600, 600);
     let ctx = canvas.getContext('2d');
     canvas.addEventListener('click', greyscale);
 
     let img = new Image();
-    img.src = './exactas.jpg';
+    img.src = newSrc;
     img.crossorigin = 'anonymous';
 
     img.onload = function() {
@@ -185,6 +204,7 @@ window.addEventListener('DOMContentLoaded', (event) => {
     }
   }
 
+  // Función para inicializar un canvas
   function setupCanvas(canvasId, width, height) {
     let canvas = document.getElementById(canvasId);
     canvas.width = width;
@@ -192,6 +212,7 @@ window.addEventListener('DOMContentLoaded', (event) => {
     return canvas;
   }
 
+  // Función para setear cada pixel del canvas
   function setPixel(imageData, x, y, r, g, b, a) {
     let index = (x + y * imageData.width) * 4;
     imageData.data[index] = r;
@@ -199,6 +220,25 @@ window.addEventListener('DOMContentLoaded', (event) => {
     imageData.data[index+2] = b;
     imageData.data[index+3] = a;
   }
+
+  // File Reader
+  let input = document.querySelector('input[type="file"]');
+  input.addEventListener('change', function(e) {
+    let file = input.files[0];
+    console.log(file.name);
+    let reader = new FileReader();
+    reader.readAsDataURL(file);
+
+    reader.onload = function() {
+      if (file.type.match('image.*')) {
+        let img = new Image();
+        img.src = reader.result;
+        punto6(img.src);
+      } else {
+        console.log('No es una imágen!');
+      }
+    };
+  });
 
   punto1();
   punto2();
