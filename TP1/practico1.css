@@ -1,5 +1,10 @@
 body {
-    font-family: arial;
+    font-family: Tahoma, Geneva, sans-serif;
+    background-color: rgb(236, 228, 183);
+    color: rgb(104, 46, 4);
+}
+header {
+    text-align: center;
 }
 
 table {
@@ -7,8 +12,19 @@ table {
     width: 40%;
 }
 
-td, th {
+td {
     border: 1px solid black;
     text-align: center;
-    padding: 5px;
+    padding: 4px;
+    background-color: white;
+}
+td:first-child {
+    background: #398AA4;
+}
+figure {
+    padding-top: 40px;
+}
+figcaption {
+    padding-bottom: 15px;
+    font-weight: bold;
 }
