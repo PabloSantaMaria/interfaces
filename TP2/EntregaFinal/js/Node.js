@@ -1,19 +1,24 @@
 /* eslint-disable linebreak-style */
-/* eslint-disable require-jsdoc */
+/* eslint-disable no-trailing-spaces */
 /* eslint-disable linebreak-style */
+/* eslint-disable require-jsdoc */
 class Node {
   constructor(x, y, r) {
     this.x = x;
     this.y = y;
     this.r = r;
-    this.color = 'black';
+    this.color = '';
   }
 
   draw() {
+    ctx.fillStyle = this.color;
     ctx.beginPath();
     ctx.arc(this.x, this.y, this.r, 0, 2 * Math.PI, false);
-    ctx.fillStyle = this.color;
     ctx.fill();
-    ctx.stroke();
+    ctx.closePath();
+  }
+
+  isClicked() {
+
   }
 }
