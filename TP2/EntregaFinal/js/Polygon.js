@@ -1,61 +1,67 @@
 /* eslint-disable linebreak-style */
+/* eslint-disable prefer-const */
 /* eslint-disable padded-blocks */
 /* eslint-disable no-trailing-spaces */
 /* eslint-disable require-jsdoc */
 class Polygon {
-  constructor() {
-    this.nodes = [];
+  constructor(context) {
+    this.ctx = context;
+    this.closed = false;
+    this.centroid = null;
+    this.vertices = [];
   }
   
-  addNode(node) {
-    this.nodes.push(node);
+  addVertex(vertex) {
+    this.vertices.push(vertex);
   }
-  
+  isClosed() {
+    return this.closed;
+  }
   draw() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
-    this.nodes.forEach(node => {
-      node.draw();
+    this.vertices.forEach(vertex => {
+      vertex.draw(this.ctx);
     });
     
-    for (let i = 0; i < this.nodes.length; i++) {
-      let node = this.nodes[i];
-      let nextNode = this.nodes[i+1];
-      if (nextNode != undefined) {
-        ctx.strokeStyle = 'yellow';
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        ctx.moveTo(node.x, node.y);
-        ctx.lineTo(nextNode.x, nextNode.y);
-        ctx.stroke();
-        ctx.closePath();
+    // refactor
+    for (let i = 0; i < this.vertices.length; i++) {
+      let vertex = this.vertices[i];
+      let nextVertex = this.vertices[i+1];
+      if (nextVertex != undefined) {
+        this.ctx.strokeStyle = 'yellow';
+        this.ctx.lineWidth = 2;
+        this.ctx.beginPath();
+        this.ctx.moveTo(vertex.x, vertex.y);
+        this.ctx.lineTo(nextVertex.x, nextVertex.y);
+        this.ctx.stroke();
+        this.ctx.closePath();
       }
     }
   }
-  
   close() {
-    let firstNode = this.nodes[0];
-    let lastNode = this.nodes[this.nodes.length-1];
+    let firstVertex = this.vertices[0];
+    let lastVertex = this.vertices[this.vertices.length-1];
     
-    ctx.strokeStyle = 'yellow';
-    ctx.beginPath();
-    ctx.moveTo(lastNode.x, lastNode.y);
-    ctx.lineTo(firstNode.x, firstNode.y);
-    ctx.stroke();
-    ctx.closePath();
-  }
+    // refactor
+    this.ctx.strokeStyle = 'yellow';
+    this.ctx.beginPath();
+    this.ctx.moveTo(lastVertex.x, lastVertex.y);
+    this.ctx.lineTo(firstVertex.x, firstVertex.y);
+    this.ctx.stroke();
+    this.ctx.closePath();
 
-  getCentroid() {
+    this.closed = true;
+  }
+  setCentroid() {
     let sumX = 0; 
     let sumY = 0;
-    this.nodes.forEach(node => {
-      sumX += node.x;
-      sumY += node.y;
+    this.vertices.forEach(vertex => {
+      sumX += vertex.x;
+      sumY += vertex.y;
     });
-    let centroidX = sumX / this.nodes.length;
-    let centroidY = sumY / this.nodes.length;
-    return new Node(centroidX, centroidY);    
+    let centroidX = sumX / this.vertices.length;
+    let centroidY = sumY / this.vertices.length;
+
+    this.centroid = new Vertex(centroidX, centroidY, 3.5);
+    this.centroid.color = 'green';
   }
-  
-  
 }

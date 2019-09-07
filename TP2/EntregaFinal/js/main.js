@@ -2,38 +2,15 @@
 /* eslint-disable padded-blocks */
 /* eslint-disable no-trailing-spaces */
 /* eslint-disable require-jsdoc */
-const c = new Canvas('canvas', 400, 400);
-
-const canvas = document.getElementById('canvas');
-canvas.width = 800;
-canvas.height = 600;
-const ctx = canvas.getContext('2d');
-const polygon = new Polygon();
-
-canvas.addEventListener('click', function(event) {
-  let x = event.clientX;
-  let y = event.clientY;
-  console.log('Click en canvas! Coordenadas: ' + x + ', ' + y);
-
-  let node = new Node(x, y, 10);
-  node.color = '#FF0000';
-  // node.draw();
-  polygon.addNode(node);
-  polygon.draw();
-  // polygon.joinNodes();
-
+const c = new Canvas('canvas', 800, 600);
+c.canvas.addEventListener('click', function(event) {
+  c.click(event);
 });
 
-let close = document.getElementById('cerrar');
-close.addEventListener('click', function() {
+const closeButton = document.getElementById('cerrar');
+closeButton.addEventListener('click', function() {
+  const polygon = c.getCurrentPolygon();
   polygon.close();
-  let centroid = polygon.getCentroid();
-  console.log(centroid);
-  
-  centroid.color = 'green';
-  centroid.r = 7;
-  console.log(centroid);
-  centroid.draw();
-  
-  
+  polygon.setCentroid();
+  polygon.centroid.draw(c.ctx);
 });
