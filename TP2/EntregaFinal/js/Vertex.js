@@ -8,6 +8,7 @@ class Vertex {
     this.y = y;
     this.r = r;
     this.color = '';
+    this.dragging = false;
   }
 
   draw(ctx) {
@@ -17,7 +18,15 @@ class Vertex {
     ctx.fill();
     ctx.closePath();
   }
-  isClicked() {
-
+  update(x, y) {
+    this.x = x;
+    this.y = y;
+  }
+  isClicked(mouseX, mouseY) {
+    const dist = Math.sqrt((mouseX - this.x) ** 2 + (mouseY - this.y) ** 2);
+    
+    if (dist < this.r) {
+      return true;
+    } else return false;
   }
 }
