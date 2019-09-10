@@ -3,9 +3,7 @@
 /* eslint-disable no-trailing-spaces */
 /* eslint-disable require-jsdoc */
 const c = new Canvas('canvas', 800, 600);
-c.canvas.onclick = function(event) {
-  c.click(event);
-};
+
 c.canvas.onmousedown = function(event) {
   c.mousedown(event);
 };
