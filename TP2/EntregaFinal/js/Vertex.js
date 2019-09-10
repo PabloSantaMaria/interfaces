@@ -18,15 +18,12 @@ class Vertex {
     ctx.fill();
     ctx.closePath();
   }
-  update(x, y) {
-    this.x = x;
-    this.y = y;
+  update(mouse) {
+    this.x = mouse.x;
+    this.y = mouse.y;
   }
-  isClicked(mouseX, mouseY) {
-    const dist = Math.sqrt((mouseX - this.x) ** 2 + (mouseY - this.y) ** 2);
-    
-    if (dist < this.r) {
-      return true;
-    } else return false;
+  mouseOn(mouse) {
+    const dist = Math.sqrt((mouse.x - this.x) ** 2 + (mouse.y - this.y) ** 2);
+    return dist < this.r;
   }
 }
