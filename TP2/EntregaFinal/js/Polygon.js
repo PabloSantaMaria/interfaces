@@ -17,6 +17,14 @@ class Polygon {
   addVertex(vertex) {
     this.vertices.push(vertex);
   }
+  deleteVertex(vertexToDelete) {
+    for (let i = 0; i < this.vertices.length; i++) {
+      const vertex = this.vertices[i];
+      if (vertex === vertexToDelete) {
+        this.vertices.splice(i, 1);
+      }
+    }
+  }
   isClosed() {
     return this.closed;
   }
@@ -26,16 +34,15 @@ class Polygon {
         vertex.draw(this.ctx);
       }
     }
+    if (this.vertices.length > 1) {
+      this.drawLines();
+    }
     if (this.centroid) {
       this.getCentroid();
       this.centroid.draw(this.ctx);
     }
-    if (this.vertices.length > 1) {
-      this.drawLines();
-    }
   }
   drawLines() {
-    this.ctx.strokeStyle = this.lineColor;
     this.ctx.beginPath();
     this.ctx.moveTo(this.vertices[0].x, this.vertices[0].y);
     for (let i = 1; i < this.vertices.length; i++) {
@@ -43,7 +50,10 @@ class Polygon {
     }
     if (this.isClosed()) {
       this.ctx.closePath();
+      this.ctx.fillStyle = 'blue';
+      this.ctx.fill();
     }
+    this.ctx.strokeStyle = this.lineColor;
     this.ctx.stroke();
   }
   close() {

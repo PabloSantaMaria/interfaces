@@ -105,6 +105,18 @@ class Canvas {
     }
     return false;
   }
+
+  deleteVertex(event) {
+    this.updateMouse(event);
+    for (const polygon of this.polygons) {
+      for (const vertex of polygon.vertices) {
+        if (vertex.mouseOn(this.mouse)) {
+          polygon.deleteVertex(vertex);
+        }
+      }
+    }
+    this.draw();
+  }
   
   updateMouse(event) {
     this.mouse.x = event.clientX - this.canvas.offsetLeft;

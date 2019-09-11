@@ -13,6 +13,9 @@ c.canvas.onmousemove = function(event) {
 c.canvas.onmouseup = function(event) {
   c.mouseup(event);
 };
+c.canvas.ondblclick = function(event) {
+  c.deleteVertex(event);
+};
 const closeButton = document.getElementById('cerrar');
 closeButton.addEventListener('click', function() {
   const polygon = c.getCurrentPolygon();
