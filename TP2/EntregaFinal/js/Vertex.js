@@ -12,11 +12,11 @@ class Vertex {
   }
 
   draw(ctx) {
-    ctx.fillStyle = this.color;
     ctx.beginPath();
     ctx.arc(this.x, this.y, this.r, 0, 2 * Math.PI, false);
-    ctx.fill();
     ctx.closePath();
+    ctx.fillStyle = this.color;
+    ctx.fill();
   }
   update(mouse) {
     this.x = mouse.x;
