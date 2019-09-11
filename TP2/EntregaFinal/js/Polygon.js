@@ -10,6 +10,7 @@ class Polygon {
     this.centroid;
     this.lineColor = 'yellow';
     this.selectedVertex;
+    this.dragging = false;
     this.vertices = [];
   }
   
@@ -26,6 +27,7 @@ class Polygon {
       }
     }
     if (this.centroid) {
+      this.getCentroid();
       this.centroid.draw(this.ctx);
     }
     if (this.vertices.length > 1) {
@@ -46,9 +48,9 @@ class Polygon {
   }
   close() {
     this.closed = true;
-    this.setCentroid();
+    this.getCentroid();
   }
-  setCentroid() {
+  getCentroid() {
     let sumX = 0; 
     let sumY = 0;
     for (const vertex of this.vertices) {
@@ -57,7 +59,22 @@ class Polygon {
     }
     let centroidX = sumX / this.vertices.length;
     let centroidY = sumY / this.vertices.length;
-    this.centroid = new Vertex(centroidX, centroidY, 3.5);
-    this.centroid.color = '#00FF00';
+
+    if (this.centroid) {
+      this.centroid.x = centroidX;
+      this.centroid.y = centroidY;
+    } else {
+      this.centroid = new Vertex(centroidX, centroidY, 3.5);
+      this.centroid.color = '#00FF00';
+    }
+  }
+  drag(startx, starty, mouse) {
+    
+    for (const vertex of this.vertices) {
+
+      vertex.x = vertex.x + (mouse.x - startx);
+      vertex.y = vertex.y + (mouse.y - starty);
+
+    }
   }
 }

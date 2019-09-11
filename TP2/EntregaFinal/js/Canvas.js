@@ -11,12 +11,18 @@ class Canvas {
     this.mouse = {x: 0, y: 0};
     this.mouseDrag = false;
     this.polygons = [];
+    this.dragStartX;
+    this.dragStartY;
   }
   
   mousedown(event) {
     event.preventDefault();
     
     this.updateMouse(event);
+
+    this.dragStartX = this.mouse.x = event.clientX - this.canvas.offsetLeft;
+    this.dragStartY = this.mouse.y = event.clientY - this.canvas.offsetTop;
+    
     
     if (!this.clickedOnVertex()) {
       const polygon = this.getCurrentPolygon();
@@ -46,6 +52,9 @@ class Canvas {
     
     if (this.mouseDrag) {
       for (const polygon of this.polygons) {
+        if (polygon.dragging) {
+          polygon.drag(this.dragStartX, this.dragStartY, this.mouse);
+        }
         for (const vertex of polygon.vertices) {
           if (vertex.dragging) {
             vertex.update(this.mouse);
@@ -53,7 +62,8 @@ class Canvas {
         }
       }
     }
-    
+    this.dragStartX = this.mouse.x = event.clientX - this.canvas.offsetLeft;
+    this.dragStartY = this.mouse.y = event.clientY - this.canvas.offsetTop;
     this.draw();
   }
   
@@ -61,6 +71,9 @@ class Canvas {
     event.preventDefault();
     
     for (const polygon of this.polygons) {
+      if (polygon.dragging) {
+        polygon.dragging = false;
+      }
       for (const vertex of polygon.vertices) {
         if (vertex.dragging) {
           vertex.dragging = false;
@@ -73,6 +86,15 @@ class Canvas {
   
   clickedOnVertex() {
     for (const polygon of this.polygons) {
+      if (polygon.isClosed() && polygon.centroid) {
+        const centroid = polygon.centroid;
+        if (centroid.mouseOn(this.mouse)) {
+          polygon.dragging = true;
+          this.mouseDrag = true;
+          return true;
+        }
+      }
+
       for (const vertex of polygon.vertices) {
         if (vertex.mouseOn(this.mouse)) {
           vertex.dragging = true;
