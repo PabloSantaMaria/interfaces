@@ -8,13 +8,23 @@ class Polygon {
     this.ctx = context;
     this.closed = false;
     this.centroid;
-    this.lineColor = 'yellow';
+    this.lineColor = 'rgb(255, 255, 0)';
+    this.brightness = 127;
     this.selectedVertex;
+    this.dragging = false;
     this.vertices = [];
   }
   
   addVertex(vertex) {
     this.vertices.push(vertex);
+  }
+  deleteVertex(vertexToDelete) {
+    for (let i = 0; i < this.vertices.length; i++) {
+      const vertex = this.vertices[i];
+      if (vertex === vertexToDelete) {
+        this.vertices.splice(i, 1);
+      }
+    }
   }
   isClosed() {
     return this.closed;
@@ -25,15 +35,15 @@ class Polygon {
         vertex.draw(this.ctx);
       }
     }
-    if (this.centroid) {
-      this.centroid.draw(this.ctx);
-    }
     if (this.vertices.length > 1) {
       this.drawLines();
     }
+    if (this.centroid) {
+      this.getCentroid();
+      this.centroid.draw(this.ctx);
+    }
   }
   drawLines() {
-    this.ctx.strokeStyle = this.lineColor;
     this.ctx.beginPath();
     this.ctx.moveTo(this.vertices[0].x, this.vertices[0].y);
     for (let i = 1; i < this.vertices.length; i++) {
@@ -41,14 +51,17 @@ class Polygon {
     }
     if (this.isClosed()) {
       this.ctx.closePath();
+      this.ctx.fillStyle = 'rgb(0, 0, ' + this.brightness + ')';
+      this.ctx.fill();
     }
+    this.ctx.strokeStyle = this.lineColor;
     this.ctx.stroke();
   }
   close() {
     this.closed = true;
-    this.setCentroid();
+    this.getCentroid();
   }
-  setCentroid() {
+  getCentroid() {
     let sumX = 0; 
     let sumY = 0;
     for (const vertex of this.vertices) {
@@ -57,7 +70,22 @@ class Polygon {
     }
     let centroidX = sumX / this.vertices.length;
     let centroidY = sumY / this.vertices.length;
-    this.centroid = new Vertex(centroidX, centroidY, 3.5);
-    this.centroid.color = '#00FF00';
+
+    if (this.centroid) {
+      this.centroid.x = centroidX;
+      this.centroid.y = centroidY;
+    } else {
+      this.centroid = new Vertex(centroidX, centroidY, 3.5);
+      this.centroid.color = 'rgb(0, 255, 0)';
+    }
+  }
+  drag(startx, starty, mouse) {
+    
+    for (const vertex of this.vertices) {
+
+      vertex.x = vertex.x + (mouse.x - startx);
+      vertex.y = vertex.y + (mouse.y - starty);
+
+    }
   }
 }

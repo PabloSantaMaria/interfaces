@@ -7,16 +7,16 @@ class Vertex {
     this.x = x;
     this.y = y;
     this.r = r;
-    this.color = '';
+    this.color = 'rgb(255, 0, 0)';
     this.dragging = false;
   }
 
   draw(ctx) {
-    ctx.fillStyle = this.color;
     ctx.beginPath();
     ctx.arc(this.x, this.y, this.r, 0, 2 * Math.PI, false);
-    ctx.fill();
     ctx.closePath();
+    ctx.fillStyle = this.color;
+    ctx.fill();
   }
   update(mouse) {
     this.x = mouse.x;

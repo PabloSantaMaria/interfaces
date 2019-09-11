@@ -11,25 +11,30 @@ class Canvas {
     this.mouse = {x: 0, y: 0};
     this.mouseDrag = false;
     this.polygons = [];
+    this.dragStartX;
+    this.dragStartY;
+    this.keyPressed = false;
   }
   
   mousedown(event) {
     event.preventDefault();
-    
     this.updateMouse(event);
+    this.logClick();
+
+    this.dragStartX = this.mouse.x = event.clientX - this.canvas.offsetLeft;
+    this.dragStartY = this.mouse.y = event.clientY - this.canvas.offsetTop;
+    
     
     if (!this.clickedOnVertex()) {
       const polygon = this.getCurrentPolygon();
       
       const vertex = new Vertex(this.mouse.x, this.mouse.y, 5);
-      vertex.color = 'rgba(255, 0, 0, 100)';
       
       polygon.addVertex(vertex);
       
       this.draw();
     }
   }
-  
   mousemove(event) {
     event.preventDefault();
     this.updateMouse(event);
@@ -46,6 +51,9 @@ class Canvas {
     
     if (this.mouseDrag) {
       for (const polygon of this.polygons) {
+        if (polygon.dragging) {
+          polygon.drag(this.dragStartX, this.dragStartY, this.mouse);
+        }
         for (const vertex of polygon.vertices) {
           if (vertex.dragging) {
             vertex.update(this.mouse);
@@ -53,7 +61,8 @@ class Canvas {
         }
       }
     }
-    
+    this.dragStartX = this.mouse.x = event.clientX - this.canvas.offsetLeft;
+    this.dragStartY = this.mouse.y = event.clientY - this.canvas.offsetTop;
     this.draw();
   }
   
@@ -61,6 +70,9 @@ class Canvas {
     event.preventDefault();
     
     for (const polygon of this.polygons) {
+      if (polygon.dragging) {
+        polygon.dragging = false;
+      }
       for (const vertex of polygon.vertices) {
         if (vertex.dragging) {
           vertex.dragging = false;
@@ -71,8 +83,40 @@ class Canvas {
     this.mouseDrag = false;
   }
   
+  logClick() {
+    console.log('Click en canvas! x: ' + this.mouse.x + ', y: ' + this.mouse.y);
+  }
+
+  changeColor(event) {
+    let direction;
+    event.deltaY > 0 ? direction = -20 : direction = 20;
+    
+    for (const polygon of this.polygons) {
+      if (polygon.closed) {
+        let brightness = polygon.brightness += direction;
+        if (brightness < 0) {
+          brightness = 0;
+        } 
+        if (brightness > 255) {
+          brightness = 255;
+        }
+        polygon.brightness = brightness;
+      }
+    }
+    this.draw();
+  }
+  
   clickedOnVertex() {
     for (const polygon of this.polygons) {
+      if (polygon.isClosed() && polygon.centroid) {
+        const centroid = polygon.centroid;
+        if (centroid.mouseOn(this.mouse)) {
+          polygon.dragging = true;
+          this.mouseDrag = true;
+          return true;
+        }
+      }
+
       for (const vertex of polygon.vertices) {
         if (vertex.mouseOn(this.mouse)) {
           vertex.dragging = true;
@@ -82,6 +126,18 @@ class Canvas {
       }
     }
     return false;
+  }
+
+  deleteVertex(event) {
+    this.updateMouse(event);
+    for (const polygon of this.polygons) {
+      for (const vertex of polygon.vertices) {
+        if (vertex.mouseOn(this.mouse)) {
+          polygon.deleteVertex(vertex);
+        }
+      }
+    }
+    this.draw();
   }
   
   updateMouse(event) {
