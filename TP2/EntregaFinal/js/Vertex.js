@@ -7,7 +7,7 @@ class Vertex {
     this.x = x;
     this.y = y;
     this.r = r;
-    this.color = '';
+    this.color = 'rgb(255, 0, 0)';
     this.dragging = false;
   }
 

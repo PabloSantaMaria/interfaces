@@ -8,7 +8,8 @@ class Polygon {
     this.ctx = context;
     this.closed = false;
     this.centroid;
-    this.lineColor = 'yellow';
+    this.lineColor = 'rgb(255, 255, 0)';
+    this.brightness = 127;
     this.selectedVertex;
     this.dragging = false;
     this.vertices = [];
@@ -50,7 +51,7 @@ class Polygon {
     }
     if (this.isClosed()) {
       this.ctx.closePath();
-      this.ctx.fillStyle = 'blue';
+      this.ctx.fillStyle = 'rgb(0, 0, ' + this.brightness + ')';
       this.ctx.fill();
     }
     this.ctx.strokeStyle = this.lineColor;
@@ -75,7 +76,7 @@ class Polygon {
       this.centroid.y = centroidY;
     } else {
       this.centroid = new Vertex(centroidX, centroidY, 3.5);
-      this.centroid.color = '#00FF00';
+      this.centroid.color = 'rgb(0, 255, 0)';
     }
   }
   drag(startx, starty, mouse) {
