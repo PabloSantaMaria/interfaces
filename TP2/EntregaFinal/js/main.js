@@ -16,6 +16,23 @@ c.canvas.onmouseup = function(event) {
 c.canvas.ondblclick = function(event) {
   c.deleteVertex(event);
 };
+document.onkeydown = function(event) {
+  if (event.keyCode === 67) {
+    c.keyPressed = true;
+  }
+};
+document.onkeyup = function(event) {
+  if (event.keyCode === 67) {
+    c.keyPressed = false;
+  }
+};
+document.onwheel = function wheel(event) {
+  if (c.keyPressed) {
+    c.changeColor(event);
+  }
+  
+};
+
 const closeButton = document.getElementById('cerrar');
 closeButton.addEventListener('click', function() {
   const polygon = c.getCurrentPolygon();

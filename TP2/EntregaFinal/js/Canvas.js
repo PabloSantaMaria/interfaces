@@ -13,12 +13,13 @@ class Canvas {
     this.polygons = [];
     this.dragStartX;
     this.dragStartY;
+    this.keyPressed = false;
   }
   
   mousedown(event) {
     event.preventDefault();
-    
     this.updateMouse(event);
+    this.logClick();
 
     this.dragStartX = this.mouse.x = event.clientX - this.canvas.offsetLeft;
     this.dragStartY = this.mouse.y = event.clientY - this.canvas.offsetTop;
@@ -28,14 +29,12 @@ class Canvas {
       const polygon = this.getCurrentPolygon();
       
       const vertex = new Vertex(this.mouse.x, this.mouse.y, 5);
-      vertex.color = 'rgba(255, 0, 0, 100)';
       
       polygon.addVertex(vertex);
       
       this.draw();
     }
   }
-  
   mousemove(event) {
     event.preventDefault();
     this.updateMouse(event);
@@ -82,6 +81,29 @@ class Canvas {
     }
     
     this.mouseDrag = false;
+  }
+  
+  logClick() {
+    console.log('Click en canvas! x: ' + this.mouse.x + ', y: ' + this.mouse.y);
+  }
+
+  changeColor(event) {
+    let direction;
+    event.deltaY > 0 ? direction = -20 : direction = 20;
+    
+    for (const polygon of this.polygons) {
+      if (polygon.closed) {
+        let brightness = polygon.brightness += direction;
+        if (brightness < 0) {
+          brightness = 0;
+        } 
+        if (brightness > 255) {
+          brightness = 255;
+        }
+        polygon.brightness = brightness;
+      }
+    }
+    this.draw();
   }
   
   clickedOnVertex() {
