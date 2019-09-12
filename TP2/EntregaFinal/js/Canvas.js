@@ -2,29 +2,45 @@
 /* eslint-disable padded-blocks */
 /* eslint-disable no-trailing-spaces */
 /* eslint-disable require-jsdoc */
+// eslint-disable-next-line no-unused-vars
 class Canvas {
   constructor(id, width, height) {
     this.canvas = document.getElementById(id);
     this.ctx = this.canvas.getContext('2d');
     this.canvas.width = width;
     this.canvas.height = height;
+    this.polygons = [];
     this.mouse = {x: 0, y: 0};
     this.mouseDrag = false;
-    this.polygons = [];
+    this.keyPressed = false;
     this.dragStartX;
     this.dragStartY;
-    this.keyPressed = false;
+    this.scrollTop = 0;
+  }
+  
+  logClick() {
+    console.log('Click en canvas! x: ' + this.mouse.x + ', y: ' + this.mouse.y);
+  }
+  
+  updateMouse(event) {
+    const canvasArea = this.canvas.getBoundingClientRect();
+    
+    const mouseX = event.pageX - canvasArea.left;
+    const mouseY = event.pageY - canvasArea.top - this.scrollTop;
+
+    this.mouse.x = mouseX;
+    this.mouse.y = mouseY;
+
   }
   
   mousedown(event) {
     event.preventDefault();
     this.updateMouse(event);
     this.logClick();
-
-    this.dragStartX = this.mouse.x = event.clientX - this.canvas.offsetLeft;
-    this.dragStartY = this.mouse.y = event.clientY - this.canvas.offsetTop;
     
-    
+    this.dragStartX = this.mouse.x;
+    this.dragStartY = this.mouse.y;
+       
     if (!this.clickedOnVertex()) {
       const polygon = this.getCurrentPolygon();
       
@@ -61,8 +77,8 @@ class Canvas {
         }
       }
     }
-    this.dragStartX = this.mouse.x = event.clientX - this.canvas.offsetLeft;
-    this.dragStartY = this.mouse.y = event.clientY - this.canvas.offsetTop;
+    this.dragStartX = this.mouse.x;
+    this.dragStartY = this.mouse.y;
     this.draw();
   }
   
@@ -83,11 +99,7 @@ class Canvas {
     this.mouseDrag = false;
   }
   
-  logClick() {
-    console.log('Click en canvas! x: ' + this.mouse.x + ', y: ' + this.mouse.y);
-  }
-
-  changeColor(event) {
+  setBrightness(event) {
     let direction;
     event.deltaY > 0 ? direction = -20 : direction = 20;
     
@@ -116,7 +128,7 @@ class Canvas {
           return true;
         }
       }
-
+      
       for (const vertex of polygon.vertices) {
         if (vertex.mouseOn(this.mouse)) {
           vertex.dragging = true;
@@ -127,7 +139,7 @@ class Canvas {
     }
     return false;
   }
-
+  
   deleteVertex(event) {
     this.updateMouse(event);
     for (const polygon of this.polygons) {
@@ -138,11 +150,6 @@ class Canvas {
       }
     }
     this.draw();
-  }
-  
-  updateMouse(event) {
-    this.mouse.x = event.clientX - this.canvas.offsetLeft;
-    this.mouse.y = event.clientY - this.canvas.offsetTop;
   }
   
   clear() {

@@ -3,16 +3,16 @@
 /* eslint-disable padded-blocks */
 /* eslint-disable no-trailing-spaces */
 /* eslint-disable require-jsdoc */
+// eslint-disable-next-line no-unused-vars
 class Polygon {
   constructor(context) {
     this.ctx = context;
-    this.closed = false;
+    this.vertices = [];
     this.centroid;
     this.lineColor = 'rgb(255, 255, 0)';
     this.brightness = 127;
-    this.selectedVertex;
+    this.closed = false;
     this.dragging = false;
-    this.vertices = [];
   }
   
   addVertex(vertex) {

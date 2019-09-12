@@ -2,6 +2,7 @@
 /* eslint-disable no-trailing-spaces */
 /* eslint-disable linebreak-style */
 /* eslint-disable require-jsdoc */
+// eslint-disable-next-line no-unused-vars
 class Vertex {
   constructor(x, y, r) {
     this.x = x;
