@@ -2,8 +2,10 @@
 /* eslint-disable padded-blocks */
 /* eslint-disable no-trailing-spaces */
 /* eslint-disable require-jsdoc */
-const c = new Canvas('canvas', 800, 600);
-
+const c = new Canvas('canvas', 800, 800);
+document.onscroll = function() {
+  c.scrollTop = document.documentElement.scrollTop;
+};
 c.canvas.onmousedown = function(event) {
   c.mousedown(event);
 };
@@ -28,9 +30,8 @@ document.onkeyup = function(event) {
 };
 document.onwheel = function wheel(event) {
   if (c.keyPressed) {
-    c.changeColor(event);
+    c.setBrightness(event);
   }
-  
 };
 
 const closeButton = document.getElementById('cerrar');
