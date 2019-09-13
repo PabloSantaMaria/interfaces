@@ -1,8 +1,3 @@
-/* eslint-disable linebreak-style */
-/* eslint-disable padded-blocks */
-/* eslint-disable no-trailing-spaces */
-/* eslint-disable require-jsdoc */
-// eslint-disable-next-line no-unused-vars
 class Canvas {
   constructor(id, width, height) {
     this.canvas = document.getElementById(id);
@@ -10,57 +5,89 @@ class Canvas {
     this.canvas.width = width;
     this.canvas.height = height;
     this.polygons = [];
-    this.mouse = {x: 0, y: 0};
+    this.mouse = {x: 0, y: 0, dragStartX: 0, dragStartY: 0};
     this.mouseDrag = false;
     this.keyPressed = false;
-    this.dragStartX;
-    this.dragStartY;
     this.scrollTop = 0;
+    this.scrollLeft = 0;
   }
-  
+  /**
+   * Imprime en la consola la posición del último click
+   */
   logClick() {
     console.log('Click en canvas! x: ' + this.mouse.x + ', y: ' + this.mouse.y);
   }
-  
-  updateMouse(event) {
+  /**
+   * Actualiza el objeto mouse
+   * Toma en cuenta el área del canvas y el scroll de la página
+   * @param event evento que tiene la posición actualizada del mouse
+   */
+  updateMousePosition(event) {
     const canvasArea = this.canvas.getBoundingClientRect();
     
-    const mouseX = event.pageX - canvasArea.left;
+    const mouseX = event.pageX - canvasArea.left - this.scrollLeft;
     const mouseY = event.pageY - canvasArea.top - this.scrollTop;
 
     this.mouse.x = mouseX;
     this.mouse.y = mouseY;
-
   }
-  
-  mousedown(event) {
+  /**
+   * Guarda el estado del mouse cuando comienza un evento de drag
+   */
+  updateMouseDrag() {
+    this.mouse.dragStartX = this.mouse.x;
+    this.mouse.dragStartY = this.mouse.y;
+  }
+  /**
+   * Comportamiento cuando se hace un click
+   * Guarda el estado si empieza un drag
+   * Chequea si se hizo click sobre algún vértice o centroide
+   * Si no es así, crea un nuevo vértice sobre el polígono que se está creando o crea uno nuevo
+   * Redibuja
+   * @param event evento que trae las coordenadas del click
+   */
+  mouseDown(event) {
     event.preventDefault();
-    this.updateMouse(event);
+    this.updateMousePosition(event);
+    this.updateMouseDrag();
+
     this.logClick();
-    
-    this.dragStartX = this.mouse.x;
-    this.dragStartY = this.mouse.y;
        
     if (!this.clickedOnVertex()) {
       const polygon = this.getCurrentPolygon();
-      
       const vertex = new Vertex(this.mouse.x, this.mouse.y, 5);
-      
       polygon.addVertex(vertex);
       
       this.draw();
     }
   }
-  mousemove(event) {
+  /**
+   * Actualiza el objeto mouse
+   * Chequea si el mouse pasa por algún vértice o centroide para cambiar el estilo
+   * Si se está realizando un drag, chequea si es sobre todo un polígono (centroide)
+   * o sobre un vértice y llama a la función drag que corresponde a cada objeto
+   * Guarda el estado al comenzar el drag
+   * Redibuja
+   * @param event evento que trae la posición del mouse al moverse 
+   */
+  mouseMove(event) {
     event.preventDefault();
-    this.updateMouse(event);
+    this.updateMousePosition(event);
     
     for (const polygon of this.polygons) {
+      if (polygon.closed) {
+        const centroid = polygon.centroid;
+        if (centroid.mouseOn(this.mouse)) {
+          centroid.hover = true;
+        } else {
+          centroid.hover = false;
+        }
+      }
       for (const vertex of polygon.vertices) {
         if (vertex.mouseOn(this.mouse)) {
-          vertex.r = 8;
+          vertex.hover = true;
         } else {
-          vertex.r = 5;
+          vertex.hover = false;
         }
       }
     }
@@ -68,7 +95,7 @@ class Canvas {
     if (this.mouseDrag) {
       for (const polygon of this.polygons) {
         if (polygon.dragging) {
-          polygon.drag(this.dragStartX, this.dragStartY, this.mouse);
+          polygon.drag(this.mouse);
         }
         for (const vertex of polygon.vertices) {
           if (vertex.dragging) {
@@ -77,12 +104,15 @@ class Canvas {
         }
       }
     }
-    this.dragStartX = this.mouse.x;
-    this.dragStartY = this.mouse.y;
+    this.updateMouseDrag();
     this.draw();
   }
-  
-  mouseup(event) {
+  /**
+   * Recorre todos los polígonos y sus vértices
+   * Setea el boolean dragging en false a todos
+   * @param event evento que trae la posición de cuando se levanta el botón del mouse
+   */
+  mouseUp(event) {
     event.preventDefault();
     
     for (const polygon of this.polygons) {
@@ -98,10 +128,17 @@ class Canvas {
     
     this.mouseDrag = false;
   }
-  
+  /**
+   * Cambia el brillo de las figuras cerradas
+   * Asigna dirección de la rueda del mouse
+   * Aumenta o disminuye la intensidad en pasos de 10 unidades
+   * Asigna topes entre 0 y 255
+   * Redibuja
+   * @param event evento que trae la informacíon de la rueda del mouse
+   */
   setBrightness(event) {
     let direction;
-    event.deltaY > 0 ? direction = -20 : direction = 20;
+    event.deltaY > 0 ? direction = -10 : direction = 10;
     
     for (const polygon of this.polygons) {
       if (polygon.closed) {
@@ -117,10 +154,13 @@ class Canvas {
     }
     this.draw();
   }
-  
+  /**
+   * Devuelve true si el mouse hizo click sobre algún vértice o centroide
+   * Setea booleans true para indicar dragging
+   */
   clickedOnVertex() {
     for (const polygon of this.polygons) {
-      if (polygon.isClosed() && polygon.centroid) {
+      if (polygon.closed && polygon.centroid) {
         const centroid = polygon.centroid;
         if (centroid.mouseOn(this.mouse)) {
           polygon.dragging = true;
@@ -139,9 +179,14 @@ class Canvas {
     }
     return false;
   }
-  
+  /**
+   * Chequea si se hizo doble click en algún vértice
+   * Pasa como parámetro el vértice clickeado al polígono correspondiente
+   * Redibuja
+   * @param event evento que trae coordenadas del doble click
+   */
   deleteVertex(event) {
-    this.updateMouse(event);
+    this.updateMousePosition(event);
     for (const polygon of this.polygons) {
       for (const vertex of polygon.vertices) {
         if (vertex.mouseOn(this.mouse)) {
@@ -151,20 +196,28 @@ class Canvas {
     }
     this.draw();
   }
-  
+  /**
+   * Borra el canvas
+   */
   clear() {
     this.ctx.clearRect(0, 0, canvas.width, canvas.height);
   }
-  
+  /**
+   * Agrega un polígono al arreglo de polígonos
+   * @param polygon objeto polígono
+   */
   addPolygon(polygon) {
     this.polygons.push(polygon);
   }
-  
+  /**
+   * Devuelve el polígono sobre el que se está trabajando (está abierto)
+   * Si no existe, crea uno nuevo
+   */
   getCurrentPolygon() {
     let currentPolygon;
     if (this.polygons.length > 0) {
       for (const polygon of this.polygons) {
-        if (!polygon.isClosed()) {
+        if (!polygon.closed) {
           currentPolygon = polygon;
         }
       }
@@ -175,7 +228,9 @@ class Canvas {
     }
     return currentPolygon;
   }
-  
+  /**
+   * Borra el canvas y redibuja todos los polígonos
+   */
   draw() {
     this.clear();
     if (this.polygons.length > 0) {
