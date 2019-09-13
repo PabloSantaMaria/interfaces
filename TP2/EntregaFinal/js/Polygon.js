@@ -1,9 +1,3 @@
-/* eslint-disable linebreak-style */
-/* eslint-disable prefer-const */
-/* eslint-disable padded-blocks */
-/* eslint-disable no-trailing-spaces */
-/* eslint-disable require-jsdoc */
-// eslint-disable-next-line no-unused-vars
 class Polygon {
   constructor(context) {
     this.ctx = context;
@@ -14,10 +8,17 @@ class Polygon {
     this.closed = false;
     this.dragging = false;
   }
-  
+  /**
+   * Agrega un vértice al arreglo de vértices
+   * @param vertex 
+   */
   addVertex(vertex) {
     this.vertices.push(vertex);
   }
+  /**
+   * Borra el vértice pasado como parámetro del arreglo de vértices (si existe)
+   * @param vertexToDelete 
+   */
   deleteVertex(vertexToDelete) {
     for (let i = 0; i < this.vertices.length; i++) {
       const vertex = this.vertices[i];
@@ -26,9 +27,9 @@ class Polygon {
       }
     }
   }
-  isClosed() {
-    return this.closed;
-  }
+  /**
+   * Dibuja los vértices y el centroide. Llama a dibujar líneas si hay más de 1 vértice
+   */
   draw() {
     if (this.vertices.length > 0) {
       for (const vertex of this.vertices) {
@@ -39,29 +40,42 @@ class Polygon {
       this.drawLines();
     }
     if (this.centroid) {
-      this.getCentroid();
+      this.setCentroid();
       this.centroid.draw(this.ctx);
     }
   }
+  /**
+   * Dibuja líneas entre vértices recorriendo los centros de los vértices. Si está cerrado cierra el path con el primer vértice
+   */
   drawLines() {
     this.ctx.beginPath();
     this.ctx.moveTo(this.vertices[0].x, this.vertices[0].y);
     for (let i = 1; i < this.vertices.length; i++) {
       this.ctx.lineTo(this.vertices[i].x, this.vertices[i].y);
     }
-    if (this.isClosed()) {
+    if (this.closed) {
       this.ctx.closePath();
       this.ctx.fillStyle = 'rgb(0, 0, ' + this.brightness + ')';
       this.ctx.fill();
     }
     this.ctx.strokeStyle = this.lineColor;
+    this.ctx.lineWidth = 2;
     this.ctx.stroke();
   }
+  /**
+   * Cierra el polígono y llama a setear su centroide
+   */
   close() {
     this.closed = true;
-    this.getCentroid();
+    this.setCentroid();
   }
-  getCentroid() {
+  /**
+   * Calcula el centroide.
+   * Nota: los polígonos irregulares no tienen un "centro", ya que puede ser que no haya un punto equidistante
+   * entre todos los vértices. Sin embargo pueden tener un "centro de gravedad" o "centroide", y es posible que 
+   * éste se encuentre fuera de la figura
+   */
+  setCentroid() {
     let sumX = 0; 
     let sumY = 0;
     for (const vertex of this.vertices) {
@@ -76,16 +90,18 @@ class Polygon {
       this.centroid.y = centroidY;
     } else {
       this.centroid = new Vertex(centroidX, centroidY, 3.5);
-      this.centroid.color = 'rgb(0, 255, 0)';
+      this.centroid.color = 'rgb(0, 200, 0)';
+      this.centroid.hoverColor = 'rgb(0, 255, 100)';
     }
   }
-  drag(startx, starty, mouse) {
-    
+  /**
+   * Actualiza la posición de los vértices de acuerdo al delta entre la posición anterior y alcual del mouse
+   * @param mouse objeto mouse que contiene el estado actual y el estado antes de comenzar el drag
+   */
+  drag(mouse) {
     for (const vertex of this.vertices) {
-
-      vertex.x = vertex.x + (mouse.x - startx);
-      vertex.y = vertex.y + (mouse.y - starty);
-
+      vertex.x += mouse.x - mouse.dragStartX;
+      vertex.y += mouse.y - mouse.dragStartY;
     }
   }
 }
