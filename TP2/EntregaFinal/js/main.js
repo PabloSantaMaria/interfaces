@@ -5,15 +5,16 @@
 const c = new Canvas('canvas', 800, 600);
 document.onscroll = function() {
   c.scrollTop = document.documentElement.scrollTop;
+  c.scrollLeft = document.documentElement.scrollLeft;
 };
 c.canvas.onmousedown = function(event) {
-  c.mousedown(event);
+  c.mouseDown(event);
 };
 c.canvas.onmousemove = function(event) {
-  c.mousemove(event);
+  c.mouseMove(event);
 };
 c.canvas.onmouseup = function(event) {
-  c.mouseup(event);
+  c.mouseUp(event);
 };
 c.canvas.ondblclick = function(event) {
   c.deleteVertex(event);

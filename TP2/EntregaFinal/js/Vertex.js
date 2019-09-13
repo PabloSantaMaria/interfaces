@@ -8,15 +8,27 @@ class Vertex {
     this.x = x;
     this.y = y;
     this.r = r;
-    this.color = 'rgb(255, 0, 0)';
+    this.color = 'rgb(200, 0, 0)';
+    this.hoverColor = 'rgb(255, 0, 0)';
+    this.hoverRadius = 3;
     this.dragging = false;
+    this.hover = false;
   }
 
   draw(ctx) {
+    let radius;
+    let color;
+    if (this.hover) {
+      radius = this.r + this.hoverRadius;
+      color = this.hoverColor;
+    } else {
+      radius = this.r;
+      color = this.color;
+    }
     ctx.beginPath();
-    ctx.arc(this.x, this.y, this.r, 0, 2 * Math.PI, false);
+    ctx.arc(this.x, this.y, radius, 0, 2 * Math.PI, false);
     ctx.closePath();
-    ctx.fillStyle = this.color;
+    ctx.fillStyle = color;
     ctx.fill();
   }
   update(mouse) {

@@ -10,57 +10,64 @@ class Canvas {
     this.canvas.width = width;
     this.canvas.height = height;
     this.polygons = [];
-    this.mouse = {x: 0, y: 0};
+    this.mouse = {x: 0, y: 0, dragStartX: 0, dragStartY: 0};
     this.mouseDrag = false;
     this.keyPressed = false;
-    this.dragStartX;
-    this.dragStartY;
     this.scrollTop = 0;
+    this.scrollLeft = 0;
   }
   
   logClick() {
     console.log('Click en canvas! x: ' + this.mouse.x + ', y: ' + this.mouse.y);
   }
   
-  updateMouse(event) {
+  updateMousePosition(event) {
     const canvasArea = this.canvas.getBoundingClientRect();
     
-    const mouseX = event.pageX - canvasArea.left;
+    const mouseX = event.pageX - canvasArea.left - this.scrollLeft;
     const mouseY = event.pageY - canvasArea.top - this.scrollTop;
 
     this.mouse.x = mouseX;
     this.mouse.y = mouseY;
 
   }
-  
-  mousedown(event) {
+  updateMouseDrag() {
+    this.mouse.dragStartX = this.mouse.x;
+    this.mouse.dragStartY = this.mouse.y;
+  }
+  mouseDown(event) {
     event.preventDefault();
-    this.updateMouse(event);
+    this.updateMousePosition(event);
+    this.updateMouseDrag();
+
     this.logClick();
-    
-    this.dragStartX = this.mouse.x;
-    this.dragStartY = this.mouse.y;
        
     if (!this.clickedOnVertex()) {
       const polygon = this.getCurrentPolygon();
-      
       const vertex = new Vertex(this.mouse.x, this.mouse.y, 5);
-      
       polygon.addVertex(vertex);
       
       this.draw();
     }
   }
-  mousemove(event) {
+  mouseMove(event) {
     event.preventDefault();
-    this.updateMouse(event);
+    this.updateMousePosition(event);
     
     for (const polygon of this.polygons) {
+      if (polygon.closed) {
+        const centroid = polygon.centroid;
+        if (centroid.mouseOn(this.mouse)) {
+          centroid.hover = true;
+        } else {
+          centroid.hover = false;
+        }
+      }
       for (const vertex of polygon.vertices) {
         if (vertex.mouseOn(this.mouse)) {
-          vertex.r = 8;
+          vertex.hover = true;
         } else {
-          vertex.r = 5;
+          vertex.hover = false;
         }
       }
     }
@@ -68,7 +75,7 @@ class Canvas {
     if (this.mouseDrag) {
       for (const polygon of this.polygons) {
         if (polygon.dragging) {
-          polygon.drag(this.dragStartX, this.dragStartY, this.mouse);
+          polygon.drag(this.mouse);
         }
         for (const vertex of polygon.vertices) {
           if (vertex.dragging) {
@@ -77,12 +84,11 @@ class Canvas {
         }
       }
     }
-    this.dragStartX = this.mouse.x;
-    this.dragStartY = this.mouse.y;
+    this.updateMouseDrag();
     this.draw();
   }
   
-  mouseup(event) {
+  mouseUp(event) {
     event.preventDefault();
     
     for (const polygon of this.polygons) {
@@ -141,7 +147,7 @@ class Canvas {
   }
   
   deleteVertex(event) {
-    this.updateMouse(event);
+    this.updateMousePosition(event);
     for (const polygon of this.polygons) {
       for (const vertex of polygon.vertices) {
         if (vertex.mouseOn(this.mouse)) {

@@ -39,7 +39,7 @@ class Polygon {
       this.drawLines();
     }
     if (this.centroid) {
-      this.getCentroid();
+      this.setCentroid();
       this.centroid.draw(this.ctx);
     }
   }
@@ -59,9 +59,9 @@ class Polygon {
   }
   close() {
     this.closed = true;
-    this.getCentroid();
+    this.setCentroid();
   }
-  getCentroid() {
+  setCentroid() {
     let sumX = 0; 
     let sumY = 0;
     for (const vertex of this.vertices) {
@@ -76,15 +76,16 @@ class Polygon {
       this.centroid.y = centroidY;
     } else {
       this.centroid = new Vertex(centroidX, centroidY, 3.5);
-      this.centroid.color = 'rgb(0, 255, 0)';
+      this.centroid.color = 'rgb(0, 200, 0)';
+      this.centroid.hoverColor = 'rgb(0, 255, 0)';
     }
   }
-  drag(startx, starty, mouse) {
+  drag(mouse) {
     
     for (const vertex of this.vertices) {
 
-      vertex.x = vertex.x + (mouse.x - startx);
-      vertex.y = vertex.y + (mouse.y - starty);
+      vertex.x += mouse.x - mouse.dragStartX;
+      vertex.y += mouse.y - mouse.dragStartY;
 
     }
   }
