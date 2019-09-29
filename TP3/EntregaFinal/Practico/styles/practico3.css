@@ -1,0 +1,156 @@
+header {
+    background: rgb(27, 108, 133);
+    padding-bottom: 50px;
+}
+.card {
+    padding-bottom: 50px;
+}
+
+/* Ejercicio 1 */
+#box {
+    width: 100px;
+    height: 100px;
+    border: 5px solid black;
+    background-color: rgb(116, 116, 187);
+    transform: rotate(0deg);
+    transition: all 1s;
+}
+#box:hover {
+    background-color: rgb(102, 0, 102);
+    transform: rotate(-180deg);
+    transition: all 1s;
+}
+
+#box p {
+    position: relative;
+    padding-top: 50%;
+    padding-bottom: 50%;
+    text-align: center;
+    color: white;
+    font-size: 20px;
+    text-shadow: 2px 2px 2px rgb(97, 97, 97);
+    transform: rotate(0deg);
+    transition: all 0.6s;
+}
+#box p:hover {
+    transform: rotate(540deg);
+    transition: all 0.6s;
+}
+
+.spacing {
+    font-size: 2em;
+    transition: all 0.6s;
+    text-align: center;
+    margin: 0 auto;
+}
+.spacing:hover {
+    letter-spacing: 10px;
+    transition: all 0.6s;
+}
+
+#circle {
+    width: 100px;
+    height: 100px;
+    border: 5px solid black;
+    background-color: rgb(116, 116, 187);
+    transform: scale(0.2);
+    transition: all 0.8s ease-out;
+}
+#circle:hover {
+    background-color: rgb(102, 0, 102);
+    transform: translate(100px);
+    transform: scale(1);
+    transition: all 0.8s ease-out;
+}
+
+/* Ejercicio 2 */
+#transform {
+    width: 200px;
+    height: 200px;
+    border: 5px solid black;
+    background-color: rgb(116, 116, 187);
+}
+#transform p {
+    padding-top: 50%;
+    padding-bottom: 50%;
+    margin-bottom: 0;
+    font-size: 20px;
+    text-shadow: 2px 2px 2px rgb(97, 97, 97);
+}
+
+/* Ejercicio 3 */
+.clock-card {
+    height: 400px;
+}
+.clock {
+    position: absolute;
+    left: 50%;
+    width: 300px;
+    height: 300px;
+    border: 10px solid rgb(153, 27, 5);
+    border-radius: 50%;
+    transform: translate(-50%);
+    background: white;
+    
+}
+.hand {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+.hand div {
+    position: absolute;
+    bottom: 50%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: black;
+    border-radius: 5px;
+}
+.sec {
+    width: 2px;
+    height: 43%;
+    transform-origin: bottom;
+    animation: seconds 60s steps(60) infinite;
+}
+@keyframes seconds {
+    0% {transform: rotate(0deg);}
+    100% {transform: rotate(360deg);}
+}
+.min {
+    width: 10px;
+    height: 38%;
+    border: 2px solid rgb(92, 165, 175);
+    transform-origin: bottom;
+    animation: minutes 3600s linear infinite;
+}
+.hour {
+    width: 10px;
+    height: 28%;
+    border: 2px solid rgb(92, 165, 175);
+    transform-origin: bottom;
+    animation: hours 43200s linear infinite;
+}
+
+/* Ejercicio 4 */
+.sprite {
+    width: 75px;
+    height: 132px;
+    background: url('../resources/capguy-walk.png') left center;
+    animation: play 0.8s steps(8) infinite;
+} 
+@keyframes play {
+    from {background-position-x: 0px;}
+    to {background-position-x: -600px;}
+}
+
+/* Ejercicio 5 */
+#area {
+    width: 100%;
+    height: 600px;
+}
+#spriteMove {
+    position: absolute;
+    transform-origin: left bottom;
+}
