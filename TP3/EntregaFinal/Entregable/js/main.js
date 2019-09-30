@@ -1,9 +1,3 @@
-/* eslint-disable linebreak-style */
-/* eslint-disable padded-blocks */
-/* eslint-disable max-len */
-/* eslint-disable require-jsdoc */
-/* eslint-disable no-trailing-spaces */
-
 window.addEventListener('DOMContentLoaded', (event) => {
   let loop = false;
   const avatar = new Avatar('avatar');

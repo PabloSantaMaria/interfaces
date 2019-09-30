@@ -14,7 +14,6 @@ body {
     height: 140px;
     background: url(../images/avatar.png);
     z-index: 100;
-    /* display: none; */
 }
 .run {
     animation: run 0.6s steps(43) infinite;
@@ -38,7 +37,6 @@ body {
     animation-iteration-count: 1;
     transform-origin: 50% 50%;
 }
-
 @keyframes die {
     0% {transform: translate(0px,0px)  rotate(0deg);}
     15% {transform: translate(-63px,-112px)  rotate(-54deg);}
@@ -92,7 +90,7 @@ body {
     100% {bottom: 600px;}
 }
 
-/* Layers */
+/* Background */
 .layer {
     position: relative;
     margin: 0 auto;
@@ -107,42 +105,36 @@ body {
     animation: parallax 360s linear infinite;
     box-shadow: 0px 0px 45px 0px rgba(0,0,0,1);
 }
-
 .layer6 {
     background: url(../images/background/layer_06.png);
     background-size: cover;
     z-index: -6;
     animation: parallax 180s linear infinite;
 }
-
 .layer5 {
     background: url(../images/background/layer_05.png);
     background-size: cover;
     z-index: -5;
     animation: parallax 100s linear infinite;
 }
-
 .layer4 {
     background: url(../images/background/layer_04.png);
     background-size: cover;
     z-index: -4;
     animation: parallax 50s linear infinite;
 }
-
 .layer3 {
     background: url(../images/background/layer_03.png);
     background-size: cover;
     z-index: -3;
     animation: parallax 30s linear infinite;
 }
-
 .layer2 {
     background: url(../images/background/layer_02.png);
     background-size: cover;
     z-index: -2;
     animation: parallax 25s linear infinite;
 }
-
 .layer1 {
     background: url(../images/background/layer_01.png);
     overflow: hidden;
@@ -150,7 +142,6 @@ body {
     z-index: -1;
     animation: parallax 5s linear infinite;
 }
-
 @keyframes parallax {
     100% {background-position-x: -1024px;}
 }

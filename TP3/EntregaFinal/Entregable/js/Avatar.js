@@ -1,9 +1,3 @@
-/* eslint-disable linebreak-style */
-/* eslint-disable padded-blocks */
-/* eslint-disable max-len */
-/* eslint-disable require-jsdoc */
-/* eslint-disable no-trailing-spaces */
-
 class Avatar extends Character {
   constructor(domId) {
     super(domId);
@@ -20,9 +14,11 @@ class Avatar extends Character {
   checkCollision(element) {
     this.updatePosition();
     element.updatePosition();
+
+    const offset = 20;
     
     if (this.position.left < element.position.left + element.width &&
-      this.position.left + this.width > element.position.left &&
+      this.position.left + this.width - offset > element.position.left &&
       this.position.top < element.position.top + element.height &&
       this.position.top + this.height > element.position.top) {
       return true;
