@@ -1,9 +1,3 @@
-/* eslint-disable linebreak-style */
-/* eslint-disable padded-blocks */
-/* eslint-disable max-len */
-/* eslint-disable require-jsdoc */
-/* eslint-disable no-trailing-spaces */
-
 class Avatar extends Character {
   constructor(domId) {
     super(domId);
@@ -38,6 +32,7 @@ class Avatar extends Character {
         
       case 39:
         this.domElement.style.left = this.position.left + 20 + 'px';
+        break;
         
       default:
         break;
